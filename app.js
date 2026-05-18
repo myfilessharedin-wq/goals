@@ -43,6 +43,37 @@ async function loadGoals() {
       <button class="plus" data-id="${goalDoc.id}">➕</button>
     `;
 
+    card.addEventListener("touchstart", (e) => {
+  startX = e.touches[0].clientX;
+  currentCard = card;
+});
+
+card.addEventListener("touchmove", (e) => {
+  if (!currentCard) return;
+
+  let diff = e.touches[0].clientX - startX;
+
+  if (diff < -50) {
+    currentCard.style.transform = `translateX(${diff}px)`;
+    currentCard.style.opacity = "0.7";
+  }
+});
+
+card.addEventListener("touchend", async (e) => {
+  let diff = e.changedTouches[0].clientX - startX;
+
+  if (diff < -120) {
+    // swipe delete
+    await deleteDoc(doc(db, "goals", goalDoc.id));
+    loadGoals();
+  } else {
+    currentCard.style.transform = "translateX(0)";
+    currentCard.style.opacity = "1";
+  }
+
+  currentCard = null;
+});
+
     goalsContainer.appendChild(card);
   });
 }
@@ -115,3 +146,7 @@ loadGoals();
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js");
 }
+let startX = 0;
+let currentCard = null;
+
+import { deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
