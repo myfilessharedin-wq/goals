@@ -112,3 +112,6 @@ document.addEventListener("click", async (e) => {
 
 // =====================
 loadGoals();
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
