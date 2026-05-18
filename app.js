@@ -35,24 +35,28 @@ async function loadGoals() {
     const card = document.createElement("div");
     card.className = "goal-card";
 
-    card.innerHTML = `
-      <h2>${goal.title}</h2>
+    const cardClass = goal.completed ? "goal-card done" : "goal-card";
 
-      <div>🎁 Reward: <b>${goal.reward || "—"}</b></div>
+card.innerHTML = `
+  <h2>${goal.title}</h2>
 
-      <div style="margin: 8px 0;">
-        ${goal.current}/${goal.target}
-      </div>
+  ${goal.completed ? "<div>🏆 DONE</div>" : ""}
 
-      <div class="hearts">
-        ${hearts}
-      </div>
+  <div>🎁 Reward: <b>${goal.reward || "—"}</b></div>
 
-      <div style="margin-top:10px;">
-        <button class="minus" data-id="${goalDoc.id}">➖</button>
-        <button class="plus" data-id="${goalDoc.id}">➕</button>
-      </div>
-    `;
+  <div style="margin: 8px 0;">
+    ${goal.current}/${goal.target}
+  </div>
+
+  <div class="hearts">
+    ${hearts}
+  </div>
+
+  <div style="margin-top:10px;">
+    <button class="minus" data-id="${goal.id}">➖</button>
+    <button class="plus" data-id="${goal.id}">➕</button>
+  </div>
+`;
 
     goalsContainer.appendChild(card);
   });
@@ -94,22 +98,43 @@ document.addEventListener("click", async (e) => {
   const goal = goalSnap.data();
 
   if (e.target.classList.contains("plus")) {
-    if (goal.current < goal.target) {
-      await updateDoc(goalRef, {
-        current: goal.current + 1
-      });
-    }
+
+  if (goal.current < goal.target) {
+
+    const newCurrent = goal.current + 1;
+
+    const isCompleted = newCurrent >= goal.target;
+
+    await updateDoc(goalRef, {
+      current: newCurrent,
+      completed: isCompleted
+    });
   }
+}
 
   if (e.target.classList.contains("minus")) {
-    if (goal.current > 0) {
-      await updateDoc(goalRef, {
-        current: goal.current - 1
-      });
-    }
+
+  if (goal.current > 0) {
+
+    await updateDoc(goalRef, {
+      current: goal.current - 1,
+      completed: false
+    });
   }
+}
 
   loadGoals();
+  const goalsArray = [];
+
+goalsArray.forEach((goal) => {
+  goalsArray.push({
+    id: goalDoc.id,
+    ...goalDoc.data()
+  });
+});
+
+// сначала НЕ завершённые, потом завершённые
+goalsArray.sort((a, b) => a.completed - b.completed);
 });
 
 // =======================
