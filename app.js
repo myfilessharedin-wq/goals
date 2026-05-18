@@ -3,6 +3,7 @@ import { db } from "./firebase.js";
 import {
   collection,
   getDocs,
+  addDoc,
   doc,
   getDoc,
   updateDoc
@@ -10,6 +11,9 @@ import {
 
 const goalsContainer = document.getElementById("goals");
 
+// =======================
+// LOAD GOALS
+// =======================
 async function loadGoals() {
   const snapshot = await getDocs(collection(db, "goals"));
 
@@ -28,10 +32,10 @@ async function loadGoals() {
       `;
     }
 
-    const div = document.createElement("div");
-    div.className = "goal-card";
+    const card = document.createElement("div");
+    card.className = "goal-card";
 
-    div.innerHTML = `
+    card.innerHTML = `
       <h2>${goal.title}</h2>
 
       <div>🎁 Reward: <b>${goal.reward || "—"}</b></div>
@@ -50,11 +54,37 @@ async function loadGoals() {
       </div>
     `;
 
-    goalsContainer.appendChild(div);
+    goalsContainer.appendChild(card);
   });
 }
 
-// ➕ / ➖ логика
+// =======================
+// ADD NEW GOAL
+// =======================
+document.getElementById("addBtn")?.addEventListener("click", async () => {
+  const title = document.getElementById("title").value;
+  const target = Number(document.getElementById("target").value);
+  const reward = document.getElementById("reward").value;
+
+  if (!title || !target) return;
+
+  await addDoc(collection(db, "goals"), {
+    title,
+    target,
+    current: 0,
+    reward: reward || ""
+  });
+
+  document.getElementById("title").value = "";
+  document.getElementById("target").value = "";
+  document.getElementById("reward").value = "";
+
+  loadGoals();
+});
+
+// =======================
+// PLUS / MINUS LOGIC
+// =======================
 document.addEventListener("click", async (e) => {
   const id = e.target.dataset.id;
   if (!id) return;
@@ -82,4 +112,7 @@ document.addEventListener("click", async (e) => {
   loadGoals();
 });
 
+// =======================
+// INIT
+// =======================
 loadGoals();
