@@ -110,3 +110,9 @@ button {
   background: #ff4d6d;
   color: white;
 }
+
+.done {
+  opacity: 0.5;
+  transform: scale(0.98);
+  filter: grayscale(0.3);
+}
