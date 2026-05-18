@@ -1,13 +1,13 @@
 pages:
   stage: deploy
-
   script:
     - mkdir public
-    - cp -r * public/
-
+    - cp index.html public/
+    - cp app.js public/
+    - cp firebase.js public/
+    - cp style.css public/
   artifacts:
     paths:
       - public
-
   only:
     - main
