@@ -115,21 +115,7 @@ document.addEventListener("click", async (e) => {
 // =======================
 // INIT
 // =======================
-loadGoals();
-document.getElementById("addBtn").addEventListener("click", async () => {
 
-  const title = document.getElementById("title").value;
-  const target = Number(document.getElementById("target").value);
-  const reward = document.getElementById("reward").value;
-
-  if (!title || !target) return;
-
-  await addDoc(collection(db, "goals"), {
-    title: title,
-    target: target,
-    current: 0,
-    reward: reward || ""
-  });
 
   document.getElementById("title").value = "";
   document.getElementById("target").value = "";
