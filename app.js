@@ -11,9 +11,11 @@ import {
 
 const goalsContainer = document.getElementById("goals");
 
-// =======================
+console.log("APP LOADED");
+
+// =====================
 // LOAD GOALS
-// =======================
+// =====================
 async function loadGoals() {
   const snapshot = await getDocs(collection(db, "goals"));
 
@@ -25,47 +27,31 @@ async function loadGoals() {
     let hearts = "";
 
     for (let i = 0; i < goal.target; i++) {
-      hearts += `
-        <span class="heart">
-          ${i < goal.current ? "❤️" : "🤍"}
-        </span>
-      `;
+      hearts += `<span>${i < goal.current ? "❤️" : "🤍"}</span>`;
     }
 
     const card = document.createElement("div");
-    card.className = "goal-card";
+    card.className = goal.completed ? "goal-card done" : "goal-card";
 
-    const cardClass = goal.completed ? "goal-card done" : "goal-card";
+    card.innerHTML = `
+      <h2>${goal.title}</h2>
+      <div>🎁 Reward: <b>${goal.reward || "—"}</b></div>
+      <div>${goal.current}/${goal.target}</div>
+      <div>${hearts}</div>
 
-card.innerHTML = `
-  <h2>${goal.title}</h2>
-
-  ${goal.completed ? "<div>🏆 DONE</div>" : ""}
-
-  <div>🎁 Reward: <b>${goal.reward || "—"}</b></div>
-
-  <div style="margin: 8px 0;">
-    ${goal.current}/${goal.target}
-  </div>
-
-  <div class="hearts">
-    ${hearts}
-  </div>
-
-  <div style="margin-top:10px;">
-    <button class="minus" data-id="${goal.id}">➖</button>
-    <button class="plus" data-id="${goal.id}">➕</button>
-  </div>
-`;
+      <button class="minus" data-id="${goalDoc.id}">➖</button>
+      <button class="plus" data-id="${goalDoc.id}">➕</button>
+    `;
 
     goalsContainer.appendChild(card);
   });
 }
 
-// =======================
-// ADD NEW GOAL
-// =======================
-document.getElementById("addBtn")?.addEventListener("click", async () => {
+// =====================
+// ADD GOAL
+// =====================
+document.getElementById("addBtn").addEventListener("click", async () => {
+
   const title = document.getElementById("title").value;
   const target = Number(document.getElementById("target").value);
   const reward = document.getElementById("reward").value;
@@ -76,7 +62,8 @@ document.getElementById("addBtn")?.addEventListener("click", async () => {
     title,
     target,
     current: 0,
-    reward: reward || ""
+    reward: reward || "",
+    completed: false
   });
 
   document.getElementById("title").value = "";
@@ -86,10 +73,11 @@ document.getElementById("addBtn")?.addEventListener("click", async () => {
   loadGoals();
 });
 
-// =======================
-// PLUS / MINUS LOGIC
-// =======================
+// =====================
+// PLUS / MINUS
+// =====================
 document.addEventListener("click", async (e) => {
+
   const id = e.target.dataset.id;
   if (!id) return;
 
@@ -99,52 +87,28 @@ document.addEventListener("click", async (e) => {
 
   if (e.target.classList.contains("plus")) {
 
-  if (goal.current < goal.target) {
+    if (goal.current < goal.target) {
+      const newCurrent = goal.current + 1;
 
-    const newCurrent = goal.current + 1;
-
-    const isCompleted = newCurrent >= goal.target;
-
-    await updateDoc(goalRef, {
-      current: newCurrent,
-      completed: isCompleted
-    });
+      await updateDoc(goalRef, {
+        current: newCurrent,
+        completed: newCurrent >= goal.target
+      });
+    }
   }
-}
 
   if (e.target.classList.contains("minus")) {
 
-  if (goal.current > 0) {
-
-    await updateDoc(goalRef, {
-      current: goal.current - 1,
-      completed: false
-    });
+    if (goal.current > 0) {
+      await updateDoc(goalRef, {
+        current: goal.current - 1,
+        completed: false
+      });
+    }
   }
-}
 
   loadGoals();
-  const goalsArray = [];
-
-goalsArray.forEach((goal) => {
-  goalsArray.push({
-    id: goalDoc.id,
-    ...goalDoc.data()
-  });
 });
 
-// сначала НЕ завершённые, потом завершённые
-goalsArray.sort((a, b) => a.completed - b.completed);
-});
-
-// =======================
-// INIT
-// =======================
-
-
-  document.getElementById("title").value = "";
-  document.getElementById("target").value = "";
-  document.getElementById("reward").value = "";
-
-  loadGoals(); // обновляем список
-});
+// =====================
+loadGoals();
