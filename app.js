@@ -200,16 +200,11 @@ document.addEventListener(
     const goal =
       goalSnap.data();
 // EDIT
-  if (e.target.classList.contains("edit")) {
-
-    const goalRef = doc(db, "goals", id);
+ if (button.classList.contains("edit")) {
     const goalSnap = await getDoc(goalRef);
+    const goal = goalSnap.data();
 
-    openEditModal({
-      id,
-      ...goalSnap.data()
-    });
-
+    openEditModal({ id, ...goal });
     return;
   }
 
