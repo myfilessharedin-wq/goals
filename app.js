@@ -266,3 +266,53 @@ if ("serviceWorker" in navigator) {
 // =========================
 
 loadGoals();
+let editingGoalId = null;
+function openEditModal(goal) {
+  editingGoalId = goal.id;
+
+  document.getElementById("editTitle").value = goal.title;
+  document.getElementById("editTarget").value = goal.target;
+  document.getElementById("editReward").value = goal.reward || "";
+
+  document.getElementById("editModal").classList.remove("hidden");
+}
+function closeModal() {
+  document.getElementById("editModal").classList.add("hidden");
+  editingGoalId = null;
+}
+if (e.target.classList.contains("edit")) {
+  const id = e.target.dataset.id;
+
+  const goalRef = doc(db, "goals", id);
+  const goalSnap = await getDoc(goalRef);
+
+  openEditModal({
+    id,
+    ...goalSnap.data()
+  });
+}
+document.getElementById("saveEdit").onclick = async () => {
+  const goalRef = doc(db, "goals", editingGoalId);
+
+  const newTitle = document.getElementById("editTitle").value;
+  const newTarget = Number(document.getElementById("editTarget").value);
+  const newReward = document.getElementById("editReward").value;
+
+  if (!newTitle || newTarget <= 0) return;
+
+  await updateDoc(goalRef, {
+    title: newTitle,
+    target: newTarget,
+    reward: newReward || ""
+  });
+
+  closeModal();
+  loadGoals();
+};
+document.getElementById("cancelEdit").onclick = closeModal;
+
+document.getElementById("editModal").onclick = (e) => {
+  if (e.target.id === "editModal") {
+    closeModal();
+  }
+};
