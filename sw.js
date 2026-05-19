@@ -1,26 +1,16 @@
-const CACHE_NAME = "heart-rpg-cache-v1";
+const CACHE_NAME = "goals-cache-v1";
 
 const urlsToCache = [
-  "/",
-  "/index.html",
-  "/app.js",
-  "/style.css",
-  "/firebase.js",
-  "/manifest.json"
+  "./",
+  "./index.html",
+  "./style.css",
+  "./manifest.json",
+  "./icon-192.png"
 ];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(urlsToCache);
-    })
-  );
-});
-
-self.addEventListener("fetch", (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
-    })
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(urlsToCache))
   );
 });
