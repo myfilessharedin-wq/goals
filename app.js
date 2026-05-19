@@ -214,7 +214,9 @@ document.addEventListener("click", async (e) => {
     openEditModal({ id, ...goal });
     return;
   }
-
+// получаем goal для plus/minus
+const goalSnap = await getDoc(goalRef);
+const goal = goalSnap.data();
   // =========================
   // =========================
 // PLUS
@@ -267,7 +269,8 @@ if (button.classList.contains("minus")) {
 
   return;
 }
-// =========================
+});
+  // =========================
 // MODAL (EDIT)
 // =========================
 function openEditModal(goal) {
