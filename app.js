@@ -17,31 +17,80 @@ console.log("APP LOADED");
 // LOAD GOALS
 // =====================
 async function loadGoals() {
+
   const snapshot = await getDocs(collection(db, "goals"));
 
   goalsContainer.innerHTML = "";
 
+  const goalsArray = [];
+
   snapshot.forEach((goalDoc) => {
-    const goal = goalDoc.data();
+    goalsArray.push({
+      id: goalDoc.id,
+      ...goalDoc.data()
+    });
+  });
+
+  // completed вниз
+  goalsArray.sort((a, b) => {
+    return a.completed - b.completed;
+  });
+
+  goalsArray.forEach((goal) => {
 
     let hearts = "";
 
     for (let i = 0; i < goal.target; i++) {
-      hearts += `<span>${i < goal.current ? "❤️" : "🤍"}</span>`;
+      hearts += `
+        <span>
+          ${i < goal.current ? "❤️" : "🤍"}
+        </span>
+      `;
     }
 
     const card = document.createElement("div");
-    card.className = goal.completed ? "goal-card done" : "goal-card";
+
+    card.className = goal.completed
+      ? "goal-card done"
+      : "goal-card";
 
     card.innerHTML = `
       <h2>${goal.title}</h2>
-      <div>🎁 Reward: <b>${goal.reward || "—"}</b></div>
-      <div>${goal.current}/${goal.target}</div>
-      <div>${hearts}</div>
 
-      <button class="minus" data-id="${goalDoc.id}">➖</button>
-      <button class="plus" data-id="${goalDoc.id}">➕</button>
+      ${goal.completed ? "<div>🏆 DONE</div>" : ""}
+
+      <div>
+        🎁 Reward: <b>${goal.reward || "—"}</b>
+      </div>
+
+      <div style="margin:8px 0;">
+        ${goal.current}/${goal.target}
+      </div>
+
+   <div class="progress-wrapper">
+
+  <div class="progress-bar">
+    <div 
+      class="progress-fill"
+      style="width: ${(goal.current / goal.target) * 100}%">
+    </div>
+  </div>
+
+  <div class="progress-text">
+    💖 ${goal.current} / ${goal.target}
+  </div>
+
+</div>
+
+      <div style="margin-top:10px;">
+        <button class="minus" data-id="${goal.id}">➖</button>
+        <button class="plus" data-id="${goal.id}">➕</button>
+      </div>
     `;
+
+    goalsContainer.appendChild(card);
+  });
+}
 
     card.addEventListener("touchstart", (e) => {
   startX = e.touches[0].clientX;
