@@ -327,3 +327,11 @@ button:hover {
     transition: none !important;
   }
 }
+
+.goal-card {
+  transform: translateZ(0);
+}
+
+.progress-fill {
+  will-change: width;
+}
