@@ -1,261 +1,152 @@
-body {
-  font-family: "Nunito", sans-serif;
-  background:
-    radial-gradient(circle at top, #ffd6f6, #e6d6ff, #d6f0ff);
-  min-height: 100vh;
+/* ========== BASE ========== */
+* {
+  box-sizing: border-box;
   margin: 0;
-  padding: 20px;
-  color: #3b224c;
+  padding: 0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
-/* sparkle title */
-h1 {
-  text-align: center;
-  font-size: 28px;
-  color: white;
-  text-shadow:
-    0 0 8px #ff7de9,
-    0 0 16px #c77dff;
-  margin-bottom: 20px;
-font-family: "Fredoka", sans-serif;
-font-weight: 600;
-letter-spacing: 1px;
+body {
+  background: #F5F6FA;
+  color: #1F1F1F;
+  min-height: 100vh;
+  padding: 40px 16px;
 }
 
-/* goals container */
-#goals {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  max-width: 520px;
+/* Центрируем весь контент */
+.container, main {
+  max-width: 600px;
   margin: 0 auto;
 }
 
-/* y2k cards */
-.goal-card {
-  background: rgba(255,255,255,0.45);
-  backdrop-filter: blur(18px);
-  border: 2px solid rgba(255,255,255,0.5);
-  border-radius: 24px;
-  padding: 18px;
-  box-shadow:
-    0 8px 30px rgba(199,125,255,0.25),
-    inset 0 1px 4px rgba(255,255,255,0.6);
-
-  transition: 0.2s ease;
+/* ========== TITLE ========== */
+h1 {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  letter-spacing: -0.5px;
 }
 
-.goal-card:active {
-  transform: scale(0.98);
-}
-
-/* completed */
-.done {
-  opacity: 0.45;
-  filter: grayscale(0.3);
-}
-
-/* title */
-.goal-card h2 {
-  margin: 0 0 8px 0;
-  font-size: 20px;
-  font-family: "Fredoka", sans-serif;
-font-weight: 500;
-}
-
-/* reward */
-.goal-card b {
-  color: #ff4fd8;
-}
-
-/* progress bar */
-.progress-wrapper {
-  margin-top: 14px;
-}
-
-.progress-bar {
-  height: 16px;
-  background: rgba(255,255,255,0.5);
-  border-radius: 999px;
-  overflow: hidden;
-  box-shadow:
-    inset 0 2px 6px rgba(0,0,0,0.08);
-}
-
-.progress-fill {
-  height: 100%;
-  border-radius: 999px;
-
-  background:
-    linear-gradient(
-      90deg,
-      #ff7de9,
-      #c77dff,
-      #7dd3ff
-    );
-
-  box-shadow:
-    0 0 12px rgba(199,125,255,0.7);
-
-  transition: width 0.3s ease;
-}
-
-.progress-text {
-  margin-top: 8px;
+.subtitle {
+  color: #6B6B6B;
   font-size: 14px;
-  text-align: center;
+  margin-bottom: 24px;
 }
 
-/* buttons */
+/* ========== INPUT AREA ========== */
+.input-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+input {
+  flex: 1;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #E6E6E6;
+  background: white;
+  outline: none;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+input:focus {
+  border-color: #7C9A8E;
+  box-shadow: 0 0 0 3px rgba(124, 154, 142, 0.15);
+}
+
+/* ========== BUTTON ========== */
 button {
-  border: none;
-  border-radius: 16px;
-  padding: 10px 14px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-
-.plus {
-  background:
-    linear-gradient(
-      135deg,
-      #ff7de9,
-      #c77dff
-    );
-
+  background: #7C9A8E;
   color: white;
-
-  box-shadow:
-    0 4px 14px rgba(199,125,255,0.45);
+  border: none;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.minus {
-  background:
-    rgba(255,255,255,0.65);
+button:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
 }
 
-/* add form */
-.add-box {
-  max-width: 520px;
-  margin: 0 auto 18px auto;
+button:active {
+  transform: translateY(0);
+}
 
-  background: rgba(255,255,255,0.45);
-
-  backdrop-filter: blur(18px);
-
-  border-radius: 24px;
-
-  padding: 16px;
-
+/* ========== GOAL LIST ========== */
+ul {
+  list-style: none;
   display: flex;
   flex-direction: column;
   gap: 10px;
-
-  box-shadow:
-    0 8px 30px rgba(199,125,255,0.2);
 }
 
-.add-box input {
-  border: none;
+/* ========== GOAL CARD ========== */
+li {
+  background: white;
+  border: 1px solid #E8E8E8;
   border-radius: 14px;
-  padding: 12px;
-  font-size: 16px;
-
-  background: rgba(255,255,255,0.7);
+  padding: 14px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease;
 }
 
-.add-box input:focus {
-  outline: 2px solid #ff7de9;
+li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
 }
 
-.add-box button {
-  background:
-    linear-gradient(
-      135deg,
-      #ff7de9,
-      #c77dff
-    );
-
-  color: white;
+/* completed state (если у тебя есть класс completed — идеально) */
+li.completed {
+  opacity: 0.5;
+  text-decoration: line-through;
 }
 
-/* mobile */
-@media (max-width: 600px) {
-
-  body {
-    padding: 14px;
-  }
-
-  h1 {
-    font-size: 24px;
-  }
-
-  .goal-card {
-    padding: 16px;
-  }
-}
-/* pink */
-.theme-pink {
-  background:
-    linear-gradient(
-      135deg,
-      rgba(255,192,203,0.45),
-      rgba(255,255,255,0.4)
-    );
+/* ========== ACTION BUTTONS (если есть внутри li) ========== */
+li button {
+  background: transparent;
+  color: #7C9A8E;
+  border: none;
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-size: 13px;
 }
 
-/* purple dream */
-.theme-purple {
-  background:
-    linear-gradient(
-      135deg,
-      rgba(210,180,255,0.45),
-      rgba(255,255,255,0.35)
-    );
+li button:hover {
+  background: rgba(124, 154, 142, 0.1);
 }
 
-/* cyber blue */
-.theme-blue {
-  background:
-    linear-gradient(
-      135deg,
-      rgba(173,216,255,0.45),
-      rgba(255,255,255,0.35)
-    );
+/* ========== EMPTY STATE (если добавишь блок) ========== */
+.empty {
+  text-align: center;
+  color: #8A8A8A;
+  margin-top: 30px;
+  font-size: 14px;
 }
 
-/* holographic */
-.theme-holo {
-  background:
-    linear-gradient(
-      135deg,
-      rgba(255,180,255,0.35),
-      rgba(180,255,255,0.35),
-      rgba(255,255,180,0.35)
-    );
+/* ========== SMALL DECOR (опционально) ========== */
+body::before {
+  content: "✿";
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  font-size: 18px;
+  opacity: 0.08;
 }
 
-/* star silver */
-.theme-star {
-  background:
-    linear-gradient(
-      135deg,
-      rgba(240,240,255,0.5),
-      rgba(220,220,255,0.35)
-    );
-}
-input::placeholder {
-  color: #b57edc;
-  opacity: 0.8;
-  font-family: "Nunito", sans-serif;
-}
-
-button {
-  font-family: "Fredoka", sans-serif;
-  font-weight: 500;
-}
-
-* {
-  -webkit-font-smoothing: antialiased;
+body::after {
+  content: "✿";
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  font-size: 18px;
+  opacity: 0.06;
+  transform: rotate(20deg);
 }
