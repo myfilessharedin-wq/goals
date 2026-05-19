@@ -210,3 +210,8 @@ button:hover {
   margin-top: 30px;
   font-size: 14px;
 }
+.progress-text {
+  font-size: 13px;
+  color: #666;
+  letter-spacing: 0.2px;
+}
