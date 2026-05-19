@@ -165,7 +165,7 @@ addBtn.onclick = async () => {
     target: target,
     current: 0,
     reward: reward || "",
-    completed: false
+    completed: false,
     theme:
   themes[
     Math.floor(Math.random() * themes.length)
