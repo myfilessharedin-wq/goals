@@ -87,6 +87,7 @@ async function loadGoals() {
         <button class="plus" data-id="${goal.id}">
           ➕
         </button>
+        <button class="edit" data-id="${goal.id}">✏️</button>
       </div>
     `;
 
@@ -266,6 +267,30 @@ if ("serviceWorker" in navigator) {
 // =========================
 
 loadGoals();
+if (e.target.classList.contains("edit")) {
+  const id = e.target.dataset.id;
+
+  const goalRef = doc(db, "goals", id);
+  const goalSnap = await getDoc(goalRef);
+  const goal = goalSnap.data();
+
+  const newTitle = prompt("Edit title:", goal.title);
+  if (!newTitle) return;
+
+  const newTarget = Number(prompt("Edit target:", goal.target));
+  if (!newTarget || newTarget <= 0) return;
+
+  const newReward = prompt("Edit reward:", goal.reward || "");
+
+  await updateDoc(goalRef, {
+    title: newTitle,
+    target: newTarget,
+    reward: newReward || ""
+  });
+
+  loadGoals();
+}
+
 let editingGoalId = null;
 function openEditModal(goal) {
   editingGoalId = goal.id;
