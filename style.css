@@ -1,5 +1,5 @@
 body {
-  font-family: "Trebuchet MS", sans-serif;
+  font-family: "Nunito", sans-serif;
   background:
     radial-gradient(circle at top, #ffd6f6, #e6d6ff, #d6f0ff);
   min-height: 100vh;
@@ -17,6 +17,9 @@ h1 {
     0 0 8px #ff7de9,
     0 0 16px #c77dff;
   margin-bottom: 20px;
+font-family: "Fredoka", sans-serif;
+font-weight: 600;
+letter-spacing: 1px;
 }
 
 /* goals container */
@@ -56,6 +59,8 @@ h1 {
 .goal-card h2 {
   margin: 0 0 8px 0;
   font-size: 20px;
+  font-family: "Fredoka", sans-serif;
+font-weight: 500;
 }
 
 /* reward */
@@ -239,4 +244,18 @@ button {
       rgba(240,240,255,0.5),
       rgba(220,220,255,0.35)
     );
+}
+input::placeholder {
+  color: #b57edc;
+  opacity: 0.8;
+  font-family: "Nunito", sans-serif;
+}
+
+button {
+  font-family: "Fredoka", sans-serif;
+  font-weight: 500;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
 }
