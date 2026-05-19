@@ -1,92 +1,192 @@
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial;
-  background: #f5f5f7;
+  font-family: "Trebuchet MS", sans-serif;
+  background:
+    radial-gradient(circle at top, #ffd6f6, #e6d6ff, #d6f0ff);
+  min-height: 100vh;
   margin: 0;
-  padding: 16px;
-  color: #111;
+  padding: 20px;
+  color: #3b224c;
 }
 
-/* заголовок как в iOS */
+/* sparkle title */
 h1 {
   text-align: center;
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 12px;
+  font-size: 28px;
+  color: white;
+  text-shadow:
+    0 0 8px #ff7de9,
+    0 0 16px #c77dff;
+  margin-bottom: 20px;
 }
 
-/* контейнер */
+/* goals container */
 #goals {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
   max-width: 520px;
   margin: 0 auto;
 }
 
-/* карточка — как iOS widget */
+/* y2k cards */
 .goal-card {
-  background: white;
-  border-radius: 18px;
-  padding: 16px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-  transition: transform 0.15s ease, opacity 0.2s ease;
+  background: rgba(255,255,255,0.45);
+  backdrop-filter: blur(18px);
+  border: 2px solid rgba(255,255,255,0.5);
+  border-radius: 24px;
+  padding: 18px;
+  box-shadow:
+    0 8px 30px rgba(199,125,255,0.25),
+    inset 0 1px 4px rgba(255,255,255,0.6);
+
+  transition: 0.2s ease;
 }
 
-/* нажимаемость как в app */
 .goal-card:active {
   transform: scale(0.98);
 }
 
+/* completed */
+.done {
+  opacity: 0.45;
+  filter: grayscale(0.3);
+}
+
+/* title */
+.goal-card h2 {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+}
+
 /* reward */
 .goal-card b {
-  color: #ff4d6d;
+  color: #ff4fd8;
 }
 
-/* hearts */
-.hearts {
-  font-size: 22px;
-  letter-spacing: 2px;
+/* progress bar */
+.progress-wrapper {
+  margin-top: 14px;
+}
+
+.progress-bar {
+  height: 16px;
+  background: rgba(255,255,255,0.5);
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow:
+    inset 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #ff7de9,
+      #c77dff,
+      #7dd3ff
+    );
+
+  box-shadow:
+    0 0 12px rgba(199,125,255,0.7);
+
+  transition: width 0.3s ease;
+}
+
+.progress-text {
   margin-top: 8px;
+  font-size: 14px;
+  text-align: center;
 }
 
-/* кнопки как iOS */
+/* buttons */
 button {
   border: none;
-  border-radius: 12px;
-  padding: 8px 14px;
+  border-radius: 16px;
+  padding: 10px 14px;
   font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s ease;
 }
 
 .plus {
-  background: #ff4d6d;
+  background:
+    linear-gradient(
+      135deg,
+      #ff7de9,
+      #c77dff
+    );
+
   color: white;
+
+  box-shadow:
+    0 4px 14px rgba(199,125,255,0.45);
 }
 
 .minus {
-  background: #e5e5ea;
+  background:
+    rgba(255,255,255,0.65);
 }
 
-/* форма */
+/* add form */
 .add-box {
   max-width: 520px;
   margin: 0 auto 18px auto;
-  background: white;
-  padding: 14px;
-  border-radius: 18px;
+
+  background: rgba(255,255,255,0.45);
+
+  backdrop-filter: blur(18px);
+
+  border-radius: 24px;
+
+  padding: 16px;
+
   display: flex;
   flex-direction: column;
   gap: 10px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+
+  box-shadow:
+    0 8px 30px rgba(199,125,255,0.2);
 }
 
 .add-box input {
-  padding: 10px;
-  border-radius: 12px;
-  border: 1px solid #eee;
+  border: none;
+  border-radius: 14px;
+  padding: 12px;
   font-size: 16px;
+
+  background: rgba(255,255,255,0.7);
+}
+
+.add-box input:focus {
+  outline: 2px solid #ff7de9;
 }
 
 .add-box button {
-  background: #ff4d6d;
+  background:
+    linear-gradient(
+      135deg,
+      #ff7de9,
+      #c77dff
+    );
+
   color: white;
+}
+
+/* mobile */
+@media (max-width: 600px) {
+
+  body {
+    padding: 14px;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  .goal-card {
+    padding: 16px;
+  }
 }
