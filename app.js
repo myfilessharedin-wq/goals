@@ -10,7 +10,11 @@ import {
   deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+// =========================
+// STATE
+// =========================
 const goalsContainer = document.getElementById("goals");
+
 const themes = [
   "theme-pink",
   "theme-purple",
@@ -18,6 +22,9 @@ const themes = [
   "theme-holo",
   "theme-star"
 ];
+
+let editingGoalId = null;
+
 // =========================
 // LOAD GOALS
 // =========================
@@ -36,10 +43,7 @@ async function loadGoals() {
     });
   });
 
-  // completed goals go to bottom
-  goalsArray.sort((a, b) => {
-    return a.completed - b.completed;
-  });
+  goalsArray.sort((a, b) => a.completed - b.completed);
 
   goalsArray.forEach((goal) => {
 
@@ -49,10 +53,10 @@ async function loadGoals() {
     const card = document.createElement("div");
 
     card.className = `
-  goal-card
-  ${goal.completed ? "done" : ""}
-  ${goal.theme || ""}
-`;
+      goal-card
+      ${goal.completed ? "done" : ""}
+      ${goal.theme || ""}
+    `;
 
     card.innerHTML = `
       <h2>${goal.title}</h2>
@@ -74,19 +78,14 @@ async function loadGoals() {
         </div>
 
         <div class="progress-text">
-           ${goal.current} / ${goal.target}
+          ${goal.current} / ${goal.target}
         </div>
 
       </div>
 
       <div style="margin-top:14px; display:flex; gap:8px;">
-        <button class="minus" data-id="${goal.id}">
-          ➖
-        </button>
-
-        <button class="plus" data-id="${goal.id}">
-          ➕
-        </button>
+        <button class="minus" data-id="${goal.id}">➖</button>
+        <button class="plus" data-id="${goal.id}">➕</button>
         <button class="edit" data-id="${goal.id}">✏️</button>
       </div>
     `;
@@ -94,7 +93,6 @@ async function loadGoals() {
     // =========================
     // SWIPE DELETE
     // =========================
-
     let startX = 0;
 
     card.addEventListener("touchstart", (e) => {
@@ -102,36 +100,22 @@ async function loadGoals() {
     });
 
     card.addEventListener("touchmove", (e) => {
-
-      let diff =
-        e.touches[0].clientX - startX;
+      const diff = e.touches[0].clientX - startX;
 
       if (diff < -40) {
-        card.style.transform =
-          `translateX(${diff}px)`;
-
+        card.style.transform = `translateX(${diff}px)`;
         card.style.opacity = "0.7";
       }
     });
 
     card.addEventListener("touchend", async (e) => {
-
-      let diff =
-        e.changedTouches[0].clientX - startX;
+      const diff = e.changedTouches[0].clientX - startX;
 
       if (diff < -120) {
-
-        await deleteDoc(
-          doc(db, "goals", goal.id)
-        );
-
+        await deleteDoc(doc(db, "goals", goal.id));
         loadGoals();
-
       } else {
-
-        card.style.transform =
-          "translateX(0)";
-
+        card.style.transform = "translateX(0)";
         card.style.opacity = "1";
       }
     });
@@ -143,35 +127,25 @@ async function loadGoals() {
 // =========================
 // ADD GOAL
 // =========================
-
-const addBtn =
-  document.getElementById("addBtn");
+const addBtn = document.getElementById("addBtn");
 
 addBtn.onclick = async () => {
 
-  const title =
-    document.getElementById("title").value;
+  const title = document.getElementById("title").value;
+  const target = Number(document.getElementById("target").value);
+  const reward = document.getElementById("reward").value;
 
-  const target = Number(
-    document.getElementById("target").value
-  );
-
-  const reward =
-    document.getElementById("reward").value;
+  if (!title || !target || target <= 0) return;
 
   await addDoc(collection(db, "goals"), {
-    title: title,
-    target: target,
+    title,
+    target,
     current: 0,
     reward: reward || "",
     completed: false,
-    theme:
-  themes[
-    Math.floor(Math.random() * themes.length)
-  ],
+    theme: themes[Math.floor(Math.random() * themes.length)]
   });
 
-  // clear form
   document.getElementById("title").value = "";
   document.getElementById("target").value = "";
   document.getElementById("reward").value = "";
@@ -180,27 +154,23 @@ addBtn.onclick = async () => {
 };
 
 // =========================
-// PLUS / MINUS
+// CLICK HANDLER (PLUS / MINUS / EDIT)
 // =========================
+document.addEventListener("click", async (e) => {
 
-document.addEventListener(
-  "click",
-  async (e) => {
+  const button = e.target.closest("button");
+  if (!button) return;
 
-    const id = e.target.dataset.id;
+  const id = button.dataset.id;
+  if (!id) return;
 
-    if (!id) return;
+  const goalRef = doc(db, "goals", id);
 
-    const goalRef =
-      doc(db, "goals", id);
+  // =========================
+  // EDIT
+  // =========================
+  if (button.classList.contains("edit")) {
 
-    const goalSnap =
-      await getDoc(goalRef);
-
-    const goal =
-      goalSnap.data();
-// EDIT
- if (button.classList.contains("edit")) {
     const goalSnap = await getDoc(goalRef);
     const goal = goalSnap.data();
 
@@ -208,90 +178,40 @@ document.addEventListener(
     return;
   }
 
+  // =========================
+  // PLUS / MINUS
+  // =========================
+  const goalSnap = await getDoc(goalRef);
+  const goal = goalSnap.data();
 
-    // PLUS
-    if (
-      e.target.classList.contains("plus")
-    ) {
+  if (button.classList.contains("plus")) {
 
-      if (goal.current < goal.target) {
+    if (goal.current < goal.target) {
+      const newCurrent = goal.current + 1;
 
-        const newCurrent =
-          goal.current + 1;
-
-        await updateDoc(goalRef, {
-          current: newCurrent,
-          completed:
-            newCurrent >= goal.target
-        });
-      }
-    }
-
-    // MINUS
-    if (
-      e.target.classList.contains("minus")
-    ) {
-
-      if (goal.current > 0) {
-
-        await updateDoc(goalRef, {
-          current: goal.current - 1,
-          completed: false
-        });
-      }
-    }
-
-    loadGoals();
-  }
-);
-
-// =========================
-// ENTER KEY SUPPORT
-// =========================
-
-document.addEventListener(
-  "keydown",
-  (e) => {
-
-    if (e.key === "Enter") {
-      addBtn.click();
+      await updateDoc(goalRef, {
+        current: newCurrent,
+        completed: newCurrent >= goal.target
+      });
     }
   }
-);
 
-// =========================
-// SERVICE WORKER
-// =========================
+  if (button.classList.contains("minus")) {
 
-if ("serviceWorker" in navigator) {
-
-  navigator.serviceWorker
-    .register("sw.js");
-}
-
-// =========================
-// INIT
-// =========================
-
-loadGoals();
-  const newTitle = prompt("Edit title:", goal.title);
-  if (!newTitle) return;
-
-  const newTarget = Number(prompt("Edit target:", goal.target));
-  if (!newTarget || newTarget <= 0) return;
-
-  const newReward = prompt("Edit reward:", goal.reward || "");
-
-  await updateDoc(goalRef, {
-    title: newTitle,
-    target: newTarget,
-    reward: newReward || ""
-  });
+    if (goal.current > 0) {
+      await updateDoc(goalRef, {
+        current: goal.current - 1,
+        completed: false
+      });
+    }
+  }
 
   loadGoals();
-}
+});
 
-let editingGoalId = null;
+// =========================
+// MODAL (EDIT)
+// =========================
 function openEditModal(goal) {
   editingGoalId = goal.id;
 
@@ -301,21 +221,12 @@ function openEditModal(goal) {
 
   document.getElementById("editModal").classList.remove("hidden");
 }
+
 function closeModal() {
   document.getElementById("editModal").classList.add("hidden");
   editingGoalId = null;
 }
-if (e.target.classList.contains("edit")) {
-  const id = e.target.dataset.id;
 
-  const goalRef = doc(db, "goals", id);
-  const goalSnap = await getDoc(goalRef);
-
-  openEditModal({
-    id,
-    ...goalSnap.data()
-  });
-}
 document.getElementById("saveEdit").onclick = async () => {
 
   if (!editingGoalId) return;
@@ -337,6 +248,7 @@ document.getElementById("saveEdit").onclick = async () => {
   closeModal();
   loadGoals();
 };
+
 document.getElementById("cancelEdit").onclick = closeModal;
 
 document.getElementById("editModal").onclick = (e) => {
@@ -344,3 +256,22 @@ document.getElementById("editModal").onclick = (e) => {
     closeModal();
   }
 };
+
+// =========================
+// ENTER SUPPORT
+// =========================
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") addBtn.click();
+});
+
+// =========================
+// SW
+// =========================
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
+
+// =========================
+// INIT
+// =========================
+loadGoals();
