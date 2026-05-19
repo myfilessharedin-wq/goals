@@ -215,3 +215,15 @@ button:hover {
   color: #666;
   letter-spacing: 0.2px;
 }
+.status {
+  display: inline-block;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  margin-top: 6px;
+}
+
+.status.done {
+  background: rgba(124, 154, 142, 0.12);
+  color: #7C9A8E;
+}
