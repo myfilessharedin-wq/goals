@@ -201,7 +201,23 @@ document.addEventListener(
 
     const goal =
       goalSnap.data();
+// EDIT
+  if (e.target.classList.contains("edit")) {
 
+    const goalRef = doc(db, "goals", id);
+    const goalSnap = await getDoc(goalRef);
+
+    openEditModal({
+      id,
+      ...goalSnap.data()
+    });
+
+    return;
+  }
+
+  const goalRef = doc(db, "goals", id);
+  const goalSnap = await getDoc(goalRef);
+  const goal = goalSnap.data();
     // PLUS
     if (
       e.target.classList.contains("plus")
@@ -267,13 +283,6 @@ if ("serviceWorker" in navigator) {
 // =========================
 
 loadGoals();
-if (e.target.classList.contains("edit")) {
-  const id = e.target.dataset.id;
-
-  const goalRef = doc(db, "goals", id);
-  const goalSnap = await getDoc(goalRef);
-  const goal = goalSnap.data();
-
   const newTitle = prompt("Edit title:", goal.title);
   if (!newTitle) return;
 
