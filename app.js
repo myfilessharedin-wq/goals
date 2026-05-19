@@ -11,7 +11,13 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const goalsContainer = document.getElementById("goals");
-
+const themes = [
+  "theme-pink",
+  "theme-purple",
+  "theme-blue",
+  "theme-holo",
+  "theme-star"
+];
 // =========================
 // LOAD GOALS
 // =========================
@@ -42,9 +48,11 @@ async function loadGoals() {
 
     const card = document.createElement("div");
 
-    card.className = goal.completed
-      ? "goal-card done"
-      : "goal-card";
+    card.className = `
+  goal-card
+  ${goal.completed ? "done" : ""}
+  ${goal.theme || ""}
+`;
 
     card.innerHTML = `
       <h2>${goal.title}</h2>
@@ -158,6 +166,10 @@ addBtn.onclick = async () => {
     current: 0,
     reward: reward || "",
     completed: false
+    theme:
+  themes[
+    Math.floor(Math.random() * themes.length)
+  ],
   });
 
   // clear form
