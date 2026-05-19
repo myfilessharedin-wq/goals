@@ -190,3 +190,53 @@ button {
     padding: 16px;
   }
 }
+/* pink */
+.theme-pink {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,192,203,0.45),
+      rgba(255,255,255,0.4)
+    );
+}
+
+/* purple dream */
+.theme-purple {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(210,180,255,0.45),
+      rgba(255,255,255,0.35)
+    );
+}
+
+/* cyber blue */
+.theme-blue {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(173,216,255,0.45),
+      rgba(255,255,255,0.35)
+    );
+}
+
+/* holographic */
+.theme-holo {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,180,255,0.35),
+      rgba(180,255,255,0.35),
+      rgba(255,255,180,0.35)
+    );
+}
+
+/* star silver */
+.theme-star {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(240,240,255,0.5),
+      rgba(220,220,255,0.35)
+    );
+}
