@@ -51,7 +51,7 @@ async function loadGoals() {
       (goal.current / goal.target) * 100;
 
     const card = document.createElement("div");
-
+    card.dataset.cardId = goal.id;
     card.className = `
       goal-card
       ${goal.completed ? "done" : ""}
@@ -123,6 +123,43 @@ async function loadGoals() {
     goalsContainer.appendChild(card);
   });
 }
+//хелпер
+function updateGoalCard(id, updates) {
+
+  const card = document.querySelector(
+    `[data-card-id="${id}"]`
+  );
+
+  if (!card) return;
+
+  // progress text
+  if (updates.current !== undefined && updates.target !== undefined) {
+
+    const progressText =
+      card.querySelector(".progress-text");
+
+    progressText.textContent =
+      `${updates.current} / ${updates.target}`;
+
+    const progressFill =
+      card.querySelector(".progress-fill");
+
+    const percent =
+      (updates.current / updates.target) * 100;
+
+    progressFill.style.width = `${percent}%`;
+  }
+
+  // completed state
+  if (updates.completed !== undefined) {
+
+    if (updates.completed) {
+      card.classList.add("done");
+    } else {
+      card.classList.remove("done");
+    }
+  }
+}
 
 // =========================
 // ADD GOAL
@@ -179,36 +216,57 @@ document.addEventListener("click", async (e) => {
   }
 
   // =========================
-  // PLUS / MINUS
   // =========================
-  const goalSnap = await getDoc(goalRef);
-  const goal = goalSnap.data();
+// PLUS
+// =========================
+if (button.classList.contains("plus")) {
 
-  if (button.classList.contains("plus")) {
+  if (goal.current < goal.target) {
 
-    if (goal.current < goal.target) {
-      const newCurrent = goal.current + 1;
+    const newCurrent = goal.current + 1;
 
-      await updateDoc(goalRef, {
-        current: newCurrent,
-        completed: newCurrent >= goal.target
-      });
-    }
+    // instant UI update
+    updateGoalCard(id, {
+      current: newCurrent,
+      target: goal.target,
+      completed: newCurrent >= goal.target
+    });
+
+    // firebase in background
+    await updateDoc(goalRef, {
+      current: newCurrent,
+      completed: newCurrent >= goal.target
+    });
   }
 
-  if (button.classList.contains("minus")) {
+  return;
+}
 
-    if (goal.current > 0) {
-      await updateDoc(goalRef, {
-        current: goal.current - 1,
-        completed: false
-      });
-    }
+// =========================
+// MINUS
+// =========================
+if (button.classList.contains("minus")) {
+
+  if (goal.current > 0) {
+
+    const newCurrent = goal.current - 1;
+
+    // instant UI update
+    updateGoalCard(id, {
+      current: newCurrent,
+      target: goal.target,
+      completed: false
+    });
+
+    // firebase in background
+    await updateDoc(goalRef, {
+      current: newCurrent,
+      completed: false
+    });
   }
 
-  loadGoals();
-});
-
+  return;
+}
 // =========================
 // MODAL (EDIT)
 // =========================
