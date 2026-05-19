@@ -159,8 +159,6 @@ addBtn.onclick = async () => {
   const reward =
     document.getElementById("reward").value;
 
-  if (!title || target <= 0) return;
-
   await addDoc(collection(db, "goals"), {
     title: title,
     target: target,
@@ -326,13 +324,16 @@ if (e.target.classList.contains("edit")) {
   });
 }
 document.getElementById("saveEdit").onclick = async () => {
+
+  if (!editingGoalId) return;
+
   const goalRef = doc(db, "goals", editingGoalId);
 
-  const newTitle = document.getElementById("editTitle").value;
+  const newTitle = document.getElementById("editTitle").value.trim();
   const newTarget = Number(document.getElementById("editTarget").value);
   const newReward = document.getElementById("editReward").value;
 
-  if (!newTitle || newTarget <= 0) return;
+  if (!newTitle || !newTarget || newTarget <= 0) return;
 
   await updateDoc(goalRef, {
     title: newTitle,
