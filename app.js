@@ -57,10 +57,10 @@ async function loadGoals() {
     card.innerHTML = `
       <h2>${goal.title}</h2>
 
-      ${goal.completed ? "<div>🏆 DONE</div>" : ""}
+      ${goal.completed ? "<div> DONE</div>" : ""}
 
       <div>
-        🎁 Reward:
+        Reward:
         <b>${goal.reward || "—"}</b>
       </div>
 
@@ -74,7 +74,7 @@ async function loadGoals() {
         </div>
 
         <div class="progress-text">
-          💖 ${goal.current} / ${goal.target}
+           ${goal.current} / ${goal.target}
         </div>
 
       </div>
