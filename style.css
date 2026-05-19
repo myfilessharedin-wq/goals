@@ -3,7 +3,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-family: 'Nunito', system-ui, sans-serif;
 }
 
 body {
@@ -13,42 +13,40 @@ body {
   padding: 40px 16px;
 }
 
-/* Центрируем весь контент */
-.container, main {
-  max-width: 600px;
+/* ========== CONTAINER ========== */
+.container {
+  max-width: 680px;
   margin: 0 auto;
 }
 
-/* ========== TITLE ========== */
-h1 {
-  font-size: 28px;
-  font-weight: 600;
-  margin-bottom: 6px;
-  letter-spacing: -0.5px;
+/* title */
+h2 {
+  text-align: center;
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 18px;
 }
 
-.subtitle {
-  color: #6B6B6B;
-  font-size: 14px;
-  margin-bottom: 24px;
-}
-
-/* ========== INPUT AREA ========== */
-.input-group {
+/* ========== ADD BOX ========== */
+.add-box {
+  background: white;
+  border: 1px solid #E8E8E8;
+  border-radius: 16px;
+  padding: 16px;
   display: flex;
+  flex-direction: column;
   gap: 10px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.04);
 }
 
 input {
-  flex: 1;
   padding: 12px 14px;
   border-radius: 12px;
   border: 1px solid #E6E6E6;
-  background: white;
   outline: none;
   font-size: 14px;
-  transition: all 0.2s ease;
+  transition: 0.2s ease;
 }
 
 input:focus {
@@ -56,17 +54,16 @@ input:focus {
   box-shadow: 0 0 0 3px rgba(124, 154, 142, 0.15);
 }
 
-/* ========== BUTTON ========== */
 button {
   background: #7C9A8E;
   color: white;
   border: none;
-  padding: 12px 16px;
+  padding: 12px 14px;
   border-radius: 12px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: 0.2s ease;
 }
 
 button:hover {
@@ -74,79 +71,142 @@ button:hover {
   transform: translateY(-1px);
 }
 
-button:active {
-  transform: translateY(0);
-}
-
-/* ========== GOAL LIST ========== */
-ul {
-  list-style: none;
+/* ========== GOALS WRAPPER ========== */
+#goals {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
 }
 
 /* ========== GOAL CARD ========== */
-li {
+.goal-card {
   background: white;
   border: 1px solid #E8E8E8;
-  border-radius: 14px;
-  padding: 14px 14px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  border-radius: 16px;
+  padding: 16px;
   transition: all 0.2s ease;
+  position: relative;
 }
 
-li:hover {
+.goal-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.06);
 }
 
-/* completed state (если у тебя есть класс completed — идеально) */
-li.completed {
-  opacity: 0.5;
+/* DONE STATE */
+.goal-card.done {
+  opacity: 0.6;
+}
+
+.goal-card.done h2 {
   text-decoration: line-through;
 }
 
-/* ========== ACTION BUTTONS (если есть внутри li) ========== */
-li button {
-  background: transparent;
+/* TITLE INSIDE CARD */
+.goal-card h2 {
+  font-size: 18px;
+  text-align: left;
+  margin-bottom: 6px;
+}
+
+/* REWARD */
+.goal-card b {
   color: #7C9A8E;
-  border: none;
-  padding: 6px 8px;
-  border-radius: 8px;
+}
+
+/* ========== PROGRESS ========== */
+.progress-wrapper {
+  margin-top: 12px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #EEE;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #7C9A8E;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
   font-size: 13px;
+  color: #666;
 }
 
-li button:hover {
-  background: rgba(124, 154, 142, 0.1);
+/* ========== ACTION BUTTONS ========== */
+.goal-card button {
+  background: #F3F3F3;
+  color: #333;
+  border: none;
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s ease;
 }
 
-/* ========== EMPTY STATE (если добавишь блок) ========== */
-.empty {
+.goal-card button:hover {
+  background: #E8E8E8;
+}
+
+/* PLUS button accent */
+.goal-card button.plus {
+  color: #7C9A8E;
+}
+
+/* MINUS button */
+.goal-card button.minus {
+  color: #C46A6A;
+}
+
+/* button row */
+.goal-card > div:last-child {
+  margin-top: 14px;
+  display: flex;
+  gap: 8px;
+}
+
+/* ========== SWIPE FEEL (smooth UX) ========== */
+.goal-card {
+  touch-action: pan-y;
+}
+
+/* ========== THEMES (ты уже генеришь их в JS) ========== */
+/* мягкие акценты — НЕ кричащие */
+
+.theme-pink {
+  border-left: 4px solid #E7A6B1;
+}
+
+.theme-purple {
+  border-left: 4px solid #B6A6E7;
+}
+
+.theme-blue {
+  border-left: 4px solid #8FBCE6;
+}
+
+.theme-holo {
+  border-left: 4px solid #7C9A8E;
+}
+
+.theme-star {
+  border-left: 4px solid #E6D38F;
+}
+
+/* ========== SMALL EMPTY SPACE FEEL ========== */
+#goals:empty::after {
+  content: "No goals yet ✨ Add your first one";
+  display: block;
   text-align: center;
-  color: #8A8A8A;
+  color: #888;
   margin-top: 30px;
   font-size: 14px;
-}
-
-/* ========== SMALL DECOR (опционально) ========== */
-body::before {
-  content: "✿";
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  font-size: 18px;
-  opacity: 0.08;
-}
-
-body::after {
-  content: "✿";
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  font-size: 18px;
-  opacity: 0.06;
-  transform: rotate(20deg);
 }
