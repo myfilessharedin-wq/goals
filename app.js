@@ -57,7 +57,7 @@ async function loadGoals() {
     card.innerHTML = `
       <h2>${goal.title}</h2>
 
-      ${goal.completed ? "<div> DONE</div>" : ""}
+      ${goal.completed ? '<div class="status done">Completed</div>' : ""}
 
       <div>
         Reward:
