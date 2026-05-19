@@ -213,9 +213,7 @@ document.addEventListener(
     return;
   }
 
-  const goalRef = doc(db, "goals", id);
-  const goalSnap = await getDoc(goalRef);
-  const goal = goalSnap.data();
+
     // PLUS
     if (
       e.target.classList.contains("plus")
