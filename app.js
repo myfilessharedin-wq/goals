@@ -6,16 +6,15 @@ import {
   addDoc,
   doc,
   getDoc,
-  updateDoc
+  updateDoc,
+  deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const goalsContainer = document.getElementById("goals");
 
-console.log("APP LOADED");
-
-// =====================
+// =========================
 // LOAD GOALS
-// =====================
+// =========================
 async function loadGoals() {
 
   const snapshot = await getDocs(collection(db, "goals"));
@@ -31,22 +30,15 @@ async function loadGoals() {
     });
   });
 
-  // completed вниз
+  // completed goals go to bottom
   goalsArray.sort((a, b) => {
     return a.completed - b.completed;
   });
 
   goalsArray.forEach((goal) => {
 
-    let hearts = "";
-
-    for (let i = 0; i < goal.target; i++) {
-      hearts += `
-        <span>
-          ${i < goal.current ? "❤️" : "🤍"}
-        </span>
-      `;
-    }
+    const progressPercent =
+      (goal.current / goal.target) * 100;
 
     const card = document.createElement("div");
 
@@ -60,142 +52,205 @@ async function loadGoals() {
       ${goal.completed ? "<div>🏆 DONE</div>" : ""}
 
       <div>
-        🎁 Reward: <b>${goal.reward || "—"}</b>
+        🎁 Reward:
+        <b>${goal.reward || "—"}</b>
       </div>
 
-      <div style="margin:8px 0;">
-        ${goal.current}/${goal.target}
+      <div class="progress-wrapper">
+
+        <div class="progress-bar">
+          <div
+            class="progress-fill"
+            style="width: ${progressPercent}%">
+          </div>
+        </div>
+
+        <div class="progress-text">
+          💖 ${goal.current} / ${goal.target}
+        </div>
+
       </div>
 
-   <div class="progress-wrapper">
+      <div style="margin-top:14px; display:flex; gap:8px;">
+        <button class="minus" data-id="${goal.id}">
+          ➖
+        </button>
 
-  <div class="progress-bar">
-    <div 
-      class="progress-fill"
-      style="width: ${(goal.current / goal.target) * 100}%">
-    </div>
-  </div>
-
-  <div class="progress-text">
-    💖 ${goal.current} / ${goal.target}
-  </div>
-
-</div>
-
-      <div style="margin-top:10px;">
-        <button class="minus" data-id="${goal.id}">➖</button>
-        <button class="plus" data-id="${goal.id}">➕</button>
+        <button class="plus" data-id="${goal.id}">
+          ➕
+        </button>
       </div>
     `;
 
-    goalsContainer.appendChild(card);
-  });
-}
+    // =========================
+    // SWIPE DELETE
+    // =========================
+
+    let startX = 0;
 
     card.addEventListener("touchstart", (e) => {
-  startX = e.touches[0].clientX;
-  currentCard = card;
-});
+      startX = e.touches[0].clientX;
+    });
 
-card.addEventListener("touchmove", (e) => {
-  if (!currentCard) return;
+    card.addEventListener("touchmove", (e) => {
 
-  let diff = e.touches[0].clientX - startX;
+      let diff =
+        e.touches[0].clientX - startX;
 
-  if (diff < -50) {
-    currentCard.style.transform = `translateX(${diff}px)`;
-    currentCard.style.opacity = "0.7";
-  }
-});
+      if (diff < -40) {
+        card.style.transform =
+          `translateX(${diff}px)`;
 
-card.addEventListener("touchend", async (e) => {
-  let diff = e.changedTouches[0].clientX - startX;
+        card.style.opacity = "0.7";
+      }
+    });
 
-  if (diff < -120) {
-    // swipe delete
-    await deleteDoc(doc(db, "goals", goalDoc.id));
-    loadGoals();
-  } else {
-    currentCard.style.transform = "translateX(0)";
-    currentCard.style.opacity = "1";
-  }
+    card.addEventListener("touchend", async (e) => {
 
-  currentCard = null;
-});
+      let diff =
+        e.changedTouches[0].clientX - startX;
+
+      if (diff < -120) {
+
+        await deleteDoc(
+          doc(db, "goals", goal.id)
+        );
+
+        loadGoals();
+
+      } else {
+
+        card.style.transform =
+          "translateX(0)";
+
+        card.style.opacity = "1";
+      }
+    });
 
     goalsContainer.appendChild(card);
   });
 }
 
-// =====================
+// =========================
 // ADD GOAL
-// =====================
-document.getElementById("addBtn").addEventListener("click", async () => {
+// =========================
 
-  const title = document.getElementById("title").value;
-  const target = Number(document.getElementById("target").value);
-  const reward = document.getElementById("reward").value;
+const addBtn =
+  document.getElementById("addBtn");
 
-  if (!title || !target) return;
+addBtn.onclick = async () => {
+
+  const title =
+    document.getElementById("title").value;
+
+  const target = Number(
+    document.getElementById("target").value
+  );
+
+  const reward =
+    document.getElementById("reward").value;
+
+  if (!title || target <= 0) return;
 
   await addDoc(collection(db, "goals"), {
-    title,
-    target,
+    title: title,
+    target: target,
     current: 0,
     reward: reward || "",
     completed: false
   });
 
+  // clear form
   document.getElementById("title").value = "";
   document.getElementById("target").value = "";
   document.getElementById("reward").value = "";
 
   loadGoals();
-});
+};
 
-// =====================
+// =========================
 // PLUS / MINUS
-// =====================
-document.addEventListener("click", async (e) => {
+// =========================
 
-  const id = e.target.dataset.id;
-  if (!id) return;
+document.addEventListener(
+  "click",
+  async (e) => {
 
-  const goalRef = doc(db, "goals", id);
-  const goalSnap = await getDoc(goalRef);
-  const goal = goalSnap.data();
+    const id = e.target.dataset.id;
 
-  if (e.target.classList.contains("plus")) {
+    if (!id) return;
 
-    if (goal.current < goal.target) {
-      const newCurrent = goal.current + 1;
+    const goalRef =
+      doc(db, "goals", id);
 
-      await updateDoc(goalRef, {
-        current: newCurrent,
-        completed: newCurrent >= goal.target
-      });
+    const goalSnap =
+      await getDoc(goalRef);
+
+    const goal =
+      goalSnap.data();
+
+    // PLUS
+    if (
+      e.target.classList.contains("plus")
+    ) {
+
+      if (goal.current < goal.target) {
+
+        const newCurrent =
+          goal.current + 1;
+
+        await updateDoc(goalRef, {
+          current: newCurrent,
+          completed:
+            newCurrent >= goal.target
+        });
+      }
+    }
+
+    // MINUS
+    if (
+      e.target.classList.contains("minus")
+    ) {
+
+      if (goal.current > 0) {
+
+        await updateDoc(goalRef, {
+          current: goal.current - 1,
+          completed: false
+        });
+      }
+    }
+
+    loadGoals();
+  }
+);
+
+// =========================
+// ENTER KEY SUPPORT
+// =========================
+
+document.addEventListener(
+  "keydown",
+  (e) => {
+
+    if (e.key === "Enter") {
+      addBtn.click();
     }
   }
+);
 
-  if (e.target.classList.contains("minus")) {
+// =========================
+// SERVICE WORKER
+// =========================
 
-    if (goal.current > 0) {
-      await updateDoc(goalRef, {
-        current: goal.current - 1,
-        completed: false
-      });
-    }
-  }
-
-  loadGoals();
-});
-
-// =====================
-loadGoals();
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js");
-}
-let startX = 0;
-let currentCard = null;
 
-import { deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  navigator.serviceWorker
+    .register("sw.js");
+}
+
+// =========================
+// INIT
+// =========================
+
+loadGoals();
